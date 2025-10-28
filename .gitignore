@@ -1,0 +1,7 @@
+reports/
+/allure-results/
+/screenshots/
+build/
+.mp4
+.png
+.json
