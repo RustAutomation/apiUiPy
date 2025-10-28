@@ -1,0 +1,34 @@
+{
+  "status_code": 401,
+  "headers": {
+    "Date": "Tue, 28 Oct 2025 07:01:14 GMT",
+    "Content-Type": "application/json; charset=utf-8",
+    "Content-Length": "27",
+    "Connection": "keep-alive",
+    "Access-Control-Allow-Credentials": "true",
+    "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-api-key",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Origin": "http://localhost:5173",
+    "Etag": "W/\"1b-FQ1mIOMgD7jlZN53VsiSdXzsYTY\"",
+    "Nel": "{\"report_to\":\"heroku-nel\",\"response_headers\":[\"Via\"],\"max_age\":3600,\"success_fraction\":0.01,\"failure_fraction\":0.1}",
+    "Ratelimit-Limit": "100",
+    "Ratelimit-Policy": "100;w=60",
+    "Ratelimit-Remaining": "92",
+    "Ratelimit-Reset": "87",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Report-To": "{\"group\":\"heroku-nel\",\"endpoints\":[{\"url\":\"https://nel.heroku.com/reports?s=mUDtxH%2FEj%2BOBBpbS9j7QKouD8BZ1ZM5P5h4dzM02Cdg%3D\\u0026sid=c4c9725f-1ab0-44d8-820f-430df2718e11\\u0026ts=1761634874\"}],\"max_age\":3600}",
+    "Reporting-Endpoints": "heroku-nel=\"https://nel.heroku.com/reports?s=mUDtxH%2FEj%2BOBBpbS9j7QKouD8BZ1ZM5P5h4dzM02Cdg%3D&sid=c4c9725f-1ab0-44d8-820f-430df2718e11&ts=1761634874\"",
+    "Server": "cloudflare",
+    "Vary": "Origin",
+    "Via": "1.1 heroku-router",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-Request-Id": "9bd70df4-a569-45a5-bbe0-3782f7e029a6",
+    "X-Xss-Protection": "1; mode=block",
+    "cf-cache-status": "DYNAMIC",
+    "CF-RAY": "99588f8f9b83996e-FRA"
+  },
+  "body": {
+    "error": "Missing API key"
+  }
+}

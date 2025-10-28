@@ -1,0 +1,7 @@
+pytest
+allure-pytest
+requests
+playwright==1.47.0
+faker
+pillow
+numpy

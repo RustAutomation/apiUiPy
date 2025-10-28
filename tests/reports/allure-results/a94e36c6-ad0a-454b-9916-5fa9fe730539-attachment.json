@@ -1,0 +1,9 @@
+{
+  "method": "PATCH",
+  "url": "https://reqres.in/api/users/2",
+  "headers": {},
+  "params": {},
+  "body": {
+    "job": "Automation Architect"
+  }
+}

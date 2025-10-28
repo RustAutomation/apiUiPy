@@ -1,0 +1,10 @@
+{
+  "method": "POST",
+  "url": "https://reqres.in/api/users",
+  "headers": {},
+  "params": {},
+  "body": {
+    "name": "Rustam",
+    "job": "QA Engineer"
+  }
+}

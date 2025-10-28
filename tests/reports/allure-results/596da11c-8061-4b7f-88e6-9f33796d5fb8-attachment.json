@@ -1,0 +1,7 @@
+{
+  "method": "DELETE",
+  "url": "https://reqres.in/api/users/2",
+  "headers": {},
+  "params": {},
+  "body": {}
+}
