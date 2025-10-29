@@ -1,4 +1,4 @@
-# DemoQA Python Playwright Framework (auto-generated)
+# DemoQA Python Playwright Framework
 
 # 🧪 Python API/UI Test Framework
 
