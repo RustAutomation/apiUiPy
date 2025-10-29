@@ -81,7 +81,7 @@ def test_visual_demoqa_homepage():
             page.screenshot(path=actual_path, full_page=True)
             allure.attach.file(actual_path, name="Actual screenshot", attachment_type=allure.attachment_type.PNG)
 
-        baseline = "src/test/resources/screenshots/expected/demoqa_home.png"
+        baseline = "tests/resources/screenshots/expected/demoqa_home.png"
 
         if not os.path.exists(baseline):
             with allure.step("Создаём baseline (если отсутствует)"):
