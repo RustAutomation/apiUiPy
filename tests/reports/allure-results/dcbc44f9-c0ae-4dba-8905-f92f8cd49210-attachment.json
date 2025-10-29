@@ -1,9 +1,0 @@
-{
-  "method": "GET",
-  "url": "https://reqres.in/api/users",
-  "headers": {},
-  "params": {
-    "page": 2
-  },
-  "body": {}
-}
