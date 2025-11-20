@@ -5,11 +5,9 @@ from src.framework.browser.manager import new_context_page
 from src.framework.pages.practice_form import PracticeFormPage
 from src.framework.utils.data_generator import first_name, last_name, email, phone_number
 
-HEADLESS = False if (("HEADLESS" not in __import__('os').environ) or __import__('os').environ.get('HEADLESS') in ["0","false","False"]) else True
-
 @pytest.fixture
 def page_ctx():
-    ctx, page = new_context_page(headless=HEADLESS)
+    ctx, page = new_context_page()
     try:
         yield page
     finally:

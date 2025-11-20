@@ -1,21 +1,13 @@
-import os
 import allure
 from src.framework.browser.manager import new_context_page
 from src.framework.utils.visual_compare import VisualComparer
 from src.framework.utils.wait_until import wait_until
 
-
-HEADLESS = False if (
-    ("HEADLESS" not in os.environ) or os.environ.get("HEADLESS") in ["0", "false", "False"]
-) else True
-
-
-visual = VisualComparer()   # ← единственный объект на весь тест
-
+visual = VisualComparer()
 
 @allure.title("Visual regression test: DemoQA homepage")
 def test_visual_demoqa_homepage():
-    ctx, page = new_context_page(headless=HEADLESS)
+    ctx, page = new_context_page()
 
     try:
         with allure.step("Открываем страницу DemoQA"):

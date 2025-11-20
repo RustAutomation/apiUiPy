@@ -43,7 +43,11 @@ chmod +x setup_python_framework.sh
 1️⃣ удаляет старый отчёт,
 2️⃣ запускает все автотесты с Allure,
 3️⃣ и открывает отчёт в браузере автоматически:
-pytest -v --alluredir=build/allure-results
+rm -rf reports/allure-results reports/allure-report
+pytest -v --alluredir=reports/allure-results
+allure serve reports/allure-results
+или без браузера
+HEADLESS=true pytest -v --alluredir=build/allure-results
 allure serve build/allure-results
 или
 rm -rf reports/allure-results reports/allure-report && pytest || true && allure serve reports/allure-results
