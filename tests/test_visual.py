@@ -10,16 +10,14 @@ def test_visual_demoqa_homepage():
     ctx, page = new_context_page()
 
     try:
-        with allure.step("Открываем страницу DemoQA"):
-            page.goto("https://demoqa.com", timeout=60000)
+        page.goto("https://demoqa.com", timeout=60000)
 
-            wait_until(
-                lambda: page.evaluate("document.readyState") == "complete",
-                timeout=15,
-            )
+        wait_until(
+            lambda: page.evaluate("document.readyState") == "complete",
+            timeout=15,
+        )
 
-        with allure.step("Проверяем визуальное соответствие страницы"):
-            visual.compare(page, "demoqa_home")
+        visual.compare(page, "demoqa_home")
 
     finally:
         ctx.close()

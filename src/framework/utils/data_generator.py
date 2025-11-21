@@ -1,4 +1,5 @@
 from faker import Faker
+
 faker = Faker()
 
 def first_name():
@@ -12,3 +13,6 @@ def email():
 
 def phone_number():
     return ''.join([str(faker.random_digit_not_null()) for _ in range(10)])
+
+def address():
+    return faker.address().replace("\n", " ")

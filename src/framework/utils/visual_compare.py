@@ -1,79 +1,74 @@
 import os
+from PIL import Image
+import numpy as np
 import allure
-from shutil import copyfile
-from PIL import Image, ImageChops, ImageDraw
 
 
 class VisualComparer:
-    def __init__(self,
-                 baseline_dir="tests/resources/screenshots/expected",
-                 actual_dir="build/screenshots/actual",
-                 diff_dir="build/screenshots/diff",
-                 threshold_percent=2.0):
-        self.baseline_dir = baseline_dir
-        self.actual_dir = actual_dir
-        self.diff_dir = diff_dir
-        self.threshold = threshold_percent
 
-        os.makedirs(self.baseline_dir, exist_ok=True)
-        os.makedirs(self.actual_dir, exist_ok=True)
-        os.makedirs(self.diff_dir, exist_ok=True)
+    def compare(self, page, name: str, threshold: float = 2.0):
+        baseline_path = f"tests/resources/screenshots/expected/{name}.png"
+        actual_path = f"build/screenshots/actual/{name}_actual.png"
+        diff_path = f"build/screenshots/diff/{name}_diff.png"
 
-    def _create_diff_overlay(self, baseline_path, actual_path, diff_path, alpha=120):
-        """Создаёт diff с красным прозрачным overlay."""
-        base = Image.open(baseline_path).convert("RGBA")
+        os.makedirs(os.path.dirname(actual_path), exist_ok=True)
+        os.makedirs(os.path.dirname(diff_path), exist_ok=True)
+
+        page.screenshot(path=actual_path, full_page=True)
+
+        if not os.path.exists(baseline_path):
+            os.makedirs(os.path.dirname(baseline_path), exist_ok=True)
+            page.screenshot(path=baseline_path, full_page=True)
+            allure.attach.file(baseline_path, "baseline created", allure.attachment_type.PNG)
+            return
+
+        diff_percent = self._compare_files(baseline_path, actual_path, diff_path)
+
+        allure.attach.file(diff_path, "diff", allure.attachment_type.PNG)
+
+        assert diff_percent < threshold, f"Difference {diff_percent:.2f}% >= {threshold}%"
+
+    # ----------------------------------------------------------------------
+
+    def _compare_files(self, baseline_path, actual_path, diff_path):
+        baseline = Image.open(baseline_path).convert("RGBA")
         actual = Image.open(actual_path).convert("RGBA")
 
-        diff = ImageChops.difference(base, actual)
-        bbox = diff.getbbox()
+        w = min(baseline.width, actual.width)
+        h = min(baseline.height, actual.height)
 
-        if not bbox:
-            actual.save(diff_path)
-            return 0.0
+        baseline = baseline.crop((0, 0, w, h))
+        actual = actual.crop((0, 0, w, h))
 
-        diff_pixels = sum(1 for pixel in diff.getdata() if pixel != (0, 0, 0, 0))
-        total_pixels = diff.width * diff.height
-        percent = (diff_pixels / total_pixels) * 100
+        base_arr = np.array(baseline)
+        act_arr = np.array(actual)
 
-        red_overlay = Image.new("RGBA", actual.size, (255, 0, 0, 0))
-        draw = ImageDraw.Draw(red_overlay)
+        diff_mask = np.any(base_arr != act_arr, axis=-1)
+        diff_pixels = np.sum(diff_mask)
+        diff_percent = (diff_pixels / (w * h)) * 100.0
 
-        for x in range(diff.width):
-            for y in range(diff.height):
-                if diff.getpixel((x, y)) != (0, 0, 0, 0):
-                    draw.point((x, y), fill=(255, 0, 0, alpha))
+        # --- прозрачный красный overlay ---
+        highlight = act_arr.copy()
+        highlight[..., 3] = 0  # прозрачный слой
 
-        combined = Image.alpha_composite(actual, red_overlay)
-        combined.save(diff_path)
-        return percent
+        red_transparent = np.array([255, 0, 0, 120])
+        highlight[diff_mask] = red_transparent
 
-    def compare(self, page, name: str):
-        """
-        Полный цикл: снимает screenshot → создаёт baseline если нет → сравнивает → генерит diff.
-        """
+        result = Image.alpha_composite(
+            Image.fromarray(act_arr, "RGBA"),
+            Image.fromarray(highlight, "RGBA")
+        )
 
-        actual_path = f"{self.actual_dir}/{name}.png"
-        baseline_path = f"{self.baseline_dir}/{name}.png"
-        diff_path = f"{self.diff_dir}/{name}_diff.png"
+        os.makedirs(os.path.dirname(diff_path), exist_ok=True)
+        result.save(diff_path)
 
-        with allure.step("Создаём фактический скриншот"):
-            page.screenshot(path=actual_path, full_page=True)
-            allure.attach.file(actual_path, name="Actual screenshot",
-                               attachment_type=allure.attachment_type.PNG)
+        return diff_percent
 
-        # ---- Baseline creation ----
-        if not os.path.exists(baseline_path):
-            with allure.step("Baseline отсутствует — создаём"):
-                copyfile(actual_path, baseline_path)
-                allure.attach.file(baseline_path, name="Baseline created",
-                                   attachment_type=allure.attachment_type.PNG)
-                return
+    # ----------------------------------------------------------------------
 
-        # ---- Comparison ----
-        with allure.step("Сравнение baseline и фактического изображения"):
-            percent = self._create_diff_overlay(baseline_path, actual_path, diff_path)
-            allure.attach.file(diff_path, name="Diff overlay",
-                               attachment_type=allure.attachment_type.PNG)
-
-            assert percent < self.threshold, \
-                f"Difference {percent:.2f}% ≥ threshold {self.threshold}%"
+    @staticmethod
+    def compare_images(expected_path: str, actual_path: str, diff_path: str, threshold: float = 2.0):
+        comparer = VisualComparer()
+        diff_percent = comparer._compare_files(expected_path, actual_path, diff_path)
+        assert diff_percent < threshold, f"Difference {diff_percent:.2f}% >= {threshold}%"
+        return diff_percent

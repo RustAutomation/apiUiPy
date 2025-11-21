@@ -3,9 +3,12 @@ from allure_commons.types import AttachmentType
 import json
 
 
-def attach_screenshot(name, bytes_img):
-    allure.attach(bytes_img, name=name, attachment_type=AttachmentType.PNG)
-
+def attach_screenshot(name: str, png: bytes):
+    allure.attach(
+        png,
+        name=name,
+        attachment_type=allure.attachment_type.PNG
+    )
 
 def attach_text(name, text):
     allure.attach(text, name=name, attachment_type=AttachmentType.TEXT)
